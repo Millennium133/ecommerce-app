@@ -28,9 +28,9 @@ jobs:
         with:
           node-version: '16'
 
-      # - name: Create .env file
-      #   run: |
-      #   echo "MONGO_URI=${{secrets.MONGO_URI}}" 
+      - name: Set up environment variables
+        run: echo "MONGO_URI={{ secrets.MONGO_URI }}" >> $GITHUB_ENV
+
 
       - name: Install dependencies
         run: |
