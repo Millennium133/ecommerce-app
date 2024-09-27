@@ -28,9 +28,9 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Create .env file
-        run: |
-        echo "MONGO_URI=${{secrets.MONGO_URI}}" 
+      # - name: Create .env file
+      #   run: |
+      #   echo "MONGO_URI=${{secrets.MONGO_URI}}" 
 
       - name: Install dependencies
         run: |
