@@ -30,8 +30,8 @@ jobs:
 
       - name: Create .env file
         run: |
-        echo "${{secrets.MONGO_URI}}" >> $GITHUB_ENV 
-        echo "${{secrets.JWT_SECRET}}" >> $GITHUB_ENV 
+        echo "MONGO_URI=${{secrets.MONGO_URI}}" >> $GITHUB_ENV 
+        echo "JWT_SECRET=${{secrets.JWT_SECRET}}" >> $GITHUB_ENV 
 
       - name: Install dependencies
         run: |
