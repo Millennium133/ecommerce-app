@@ -37,7 +37,7 @@ jobs:
           cd backend
           npm install
 
-      - name: Run backend tests
+      - name: Run tests coverage
         run: |
           cd backend
-          npm run test
+          npm run test:coverage
