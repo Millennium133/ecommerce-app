@@ -8,7 +8,10 @@ const authRoutes = require("./routes/auth")
 const productRoutes = require("./routes/product")
 const cartRoutes = require('./routes/cart')
 
-// dotenv.config()
+// Conditionally load dotenv configuration
+if (process.env.NODE_ENV !== 'test') {
+    dotenv.config()
+}
 
 // Middleware
 app.use(express.json());

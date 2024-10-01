@@ -6,9 +6,9 @@ const User = require('../models/User');
 // User Registration
 router.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
-
     // Check if the user already exists
     const userExists = await User.findOne({ email });
+
     if (userExists) {
         return res.status(400).json({ message: 'User already exists' });
     }
@@ -20,12 +20,9 @@ router.post('/register', async (req, res) => {
             email,
             password  // Password will be hashed in the model's pre-save hook
         });
-
         await user.save();
-
         // Generate JWT token (assuming you have a generateAuthToken method)
         const token = user.generateAuthToken();  // JWT token generation
-
         res.status(201).json({
             _id: user._id,
             name: user.name,

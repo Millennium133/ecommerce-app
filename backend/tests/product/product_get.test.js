@@ -7,10 +7,14 @@ const Product = require('../../models/Product');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: '.env.test' });
+console.log(`product_get.test.js: ${process.env.MONGO_URI}`)
 
 describe('Product API Tests', () => {
     beforeAll(async () => {
-        await mongoose.connect(process.env.MONGO_URI);
+        const dbName = `db_product_get`;
+        await mongoose.connect(`${process.env.MONGO_URI}_${dbName}`);
+        await Product.deleteMany();
+
     });
 
     beforeEach(async () => {
@@ -27,6 +31,7 @@ describe('Product API Tests', () => {
     });
 
     afterAll(async () => {
+        jest.restoreAllMocks(); // Ensures all mocks are restored to their original state
         await mongoose.connection.close();
     });
 

@@ -10,6 +10,7 @@ const { generateProducts } = require('./data/products');
 const { generateCarts } = require('./data/carts');
 
 dotenv.config();
+console.log(`seed.js: ${process.env.MONGO_URI}`)
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)

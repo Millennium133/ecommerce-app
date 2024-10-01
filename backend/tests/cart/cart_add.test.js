@@ -9,11 +9,12 @@ const Product = require('../../models/Product.js');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: '.env.test' });
+console.log(`cart_add.test.js: ${process.env.MONGO_URI}`)
 
 // Mock JWT Middleware for protected routes
 jest.mock('../../middleware/authMiddleware', () => ({
     protect: (req, res, next) => {
-        req.user = { _id: 'testUserId' }; // Mock authenticated user
+        req.user = { _id: '507f1f77bcf86cd799439011' }; // Mock authenticated user
         next();
     }
 }));
@@ -27,17 +28,25 @@ describe('Cart API Tests', () => {
 
     // Connect to the test database before running the tests
     beforeAll(async () => {
-        await mongoose.connect(process.env.MONGO_URI);
+        const dbName = `db_cart`;
+        await mongoose.connect(`${process.env.MONGO_URI}_${dbName}`);
+
     });
 
-    // Clean up the database and mocks after each test
-    afterEach(async () => {
-        await User.deleteMany();
-        jest.clearAllMocks(); // Clear mocks between tests
+    beforeEach(() => {
+        jest.resetModules();
+        jest.clearAllMocks();
     });
+    
+
+    // Clean up the database and mocks after each test
+    // afterEach(async () => {
+    //     await User.deleteMany();
+    // });
 
     // Disconnect from the database after all tests
     afterAll(async () => {
+        jest.resetModules(); // Ensures all mocks are restored to their original state
         await mongoose.connection.close();
     });
 

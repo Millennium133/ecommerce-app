@@ -8,32 +8,39 @@ const dotenv = require('dotenv');
 
 // Load the test environment variables
 dotenv.config({ path: '.env.test' });
+console.log(`auth.test.js: ${process.env.MONGO_URI}`)
 
-// Mock JWT Middleware for protected routes
-jest.mock('../../middleware/authMiddleware', () => ({
-    protect: (req, res, next) => {
-        req.user = { _id: 'testUserId' }; // Mock authenticated user
-        next();
-    }
-}));
 // jest.mock('../models/User');
 describe('Authentication API Tests', () => {
     // Connect to the test database before running the tests
     beforeAll(async () => {
-        await mongoose.connect(process.env.MONGO_URI);
-    });
+        const dbName = `db_auth`;
+        await mongoose.connect(`${process.env.MONGO_URI}_${dbName}`);
+        // await mongoose.connect(`${process.env.MONGO_URI}`);
 
+        await User.deleteMany();
+    });
+    
+    beforeEach(() => {
+        jest.resetModules();
+        jest.clearAllMocks();
+    });
+    
+    
     // Clean up the database after each test
     afterEach(async () => {
         await User.deleteMany();
         jest.clearAllMocks(); // Clear mocks between tests
+
     });
 
     // Disconnect from the database after all tests
     afterAll(async () => {
         await User.deleteMany();
+        jest.restoreAllMocks(); // Ensures all mocks are restored to their original state
         await mongoose.connection.close();
     });
+
     test('User Registration - should create a new user and return a token', async () => {
         const response = await request(app)
             .post('/api/auth/register')
@@ -42,7 +49,6 @@ describe('Authentication API Tests', () => {
                 email: 'johndoe@example.com',
                 password: 'password123'
             });
-
         expect(response.statusCode).toBe(201);
         expect(response.body).toHaveProperty('token');
         expect(response.body.name).toBe('John Doe');
@@ -54,22 +60,22 @@ describe('Authentication API Tests', () => {
         expect(user.password).not.toBe('password123'); // Ensure the password is hashed
     });
     test('Prevent duplicate registration', async () => {
-        await User.create({
-            name: 'Jane Doe',
-            email: 'janedoe@example.com',
-            password: 'password123'
-        });
-
-        const response = await request(app)
+        const first_response = await request(app)
             .post('/api/auth/register')
             .send({
                 name: 'Jane Doe',
                 email: 'janedoe@example.com',
                 password: 'password123'
             });
-
-        expect(response.statusCode).toBe(400);
-        expect(response.body.message).toBe('User already exists');
+        const final_response = await request(app)
+            .post('/api/auth/register')
+            .send({
+                name: 'Jane Doe',
+                email: 'janedoe@example.com',
+                password: 'password123'
+            });
+        expect(final_response.statusCode).toBe(400);
+        expect(final_response.body.message).toBe('User already exists');
     });
     test('User Login - should log in an existing user and return a token', async () => {
         const user = new User({

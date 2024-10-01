@@ -8,6 +8,7 @@ const Product = require('../../models/Product');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: '.env.test' });
+console.log(`cart_concurrent.js: ${process.env.MONGO_URI}`)
 
 // Mock JWT Middleware for protected routes
 jest.mock('../../middleware/authMiddleware', () => ({
@@ -21,7 +22,10 @@ describe('Cart API Concurrent Requests Tests', () => {
     const authToken = 'Bearer mockToken';
 
     beforeAll(async () => {
-        await mongoose.connect(process.env.MONGO_URI);
+        const dbName = `db_cart`;
+        await mongoose.connect(`${process.env.MONGO_URI}_${dbName}`);
+        // await mongoose.connect(`${process.env.MONGO_URI}`);
+
     });
 
     afterEach(async () => {
@@ -31,6 +35,7 @@ describe('Cart API Concurrent Requests Tests', () => {
     });
 
     afterAll(async () => {
+        jest.restoreAllMocks(); // Ensures all mocks are restored to their original state
         await mongoose.connection.close();
     });
 
@@ -49,7 +54,6 @@ describe('Cart API Concurrent Requests Tests', () => {
         });        
         await product1.save();
         await product2.save();
-        console.log(`product 1: ${product1._id}`)
         // Initial empty cart
         const cart = new Cart({ userId: '507f1f77bcf86cd799439011' , items: [], totalAmount: 0 });
         await cart.save();
@@ -66,7 +70,6 @@ describe('Cart API Concurrent Requests Tests', () => {
 
         // Execute both requests concurrently
         const [addResponse, removeResponse] = await Promise.all([addProduct1, removeProduct2]);
-        console.log(addResponse.body)
         expect(addResponse.statusCode).toBe(200);
         expect(addResponse.body.items.length).toBe(1);
         expect(addResponse.body.items[0].productId).toBe(product1._id.toString());
