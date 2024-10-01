@@ -23,7 +23,6 @@ describe('Authentication API Tests', () => {
     
     beforeEach(() => {
         jest.resetModules();
-        jest.clearAllMocks();
     });
     
     

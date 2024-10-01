@@ -37,12 +37,6 @@ describe('Cart API Tests', () => {
         jest.resetModules();
         jest.clearAllMocks();
     });
-    
-
-    // Clean up the database and mocks after each test
-    // afterEach(async () => {
-    //     await User.deleteMany();
-    // });
 
     // Disconnect from the database after all tests
     afterAll(async () => {
