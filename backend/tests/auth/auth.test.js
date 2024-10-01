@@ -36,7 +36,6 @@ describe('Authentication API Tests', () => {
 
     // Disconnect from the database after all tests
     afterAll(async () => {
-        await User.deleteMany();
         jest.restoreAllMocks(); // Ensures all mocks are restored to their original state
         await mongoose.connection.close();
     });
