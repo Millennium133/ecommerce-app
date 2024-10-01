@@ -17,12 +17,13 @@ describe('Authentication API Tests', () => {
         const dbName = `db_auth`;
         await mongoose.connect(`${process.env.MONGO_URI}_${dbName}`);
         // await mongoose.connect(`${process.env.MONGO_URI}`);
-
         await User.deleteMany();
     });
     
     beforeEach(() => {
         jest.resetModules();
+        jest.clearAllMocks(); // Clear mocks between tests
+
     });
     
     
