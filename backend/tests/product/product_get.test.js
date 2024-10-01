@@ -7,7 +7,6 @@ const Product = require('../../models/Product');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: '.env.test' });
-console.log(`product_get.test.js: ${process.env.MONGO_URI}`)
 
 describe('Product API Tests', () => {
     beforeAll(async () => {

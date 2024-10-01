@@ -8,7 +8,6 @@ const Product = require('../../models/Product');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: '.env.test' });
-console.log(`cart_concurrent.js: ${process.env.MONGO_URI}`)
 
 // Mock JWT Middleware for protected routes
 jest.mock('../../middleware/authMiddleware', () => ({

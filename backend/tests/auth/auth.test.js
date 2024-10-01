@@ -8,8 +8,6 @@ const dotenv = require('dotenv');
 
 // Load the test environment variables
 dotenv.config({ path: '.env.test' });
-console.log(`auth.test.js: ${process.env.MONGO_URI}`)
-
 // jest.mock('../models/User');
 describe('Authentication API Tests', () => {
     // Connect to the test database before running the tests
