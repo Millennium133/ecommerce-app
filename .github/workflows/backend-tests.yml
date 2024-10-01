@@ -1,43 +1,43 @@
-# name: Backend Tests
+name: Backend Tests
 
-# on:
-#   push:
-#     branches:
-#       - master
-#   pull_request:
-#     branches:
-#       - master
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
-# jobs:
-#   test:
-#     runs-on: ubuntu-latest
+jobs:
+  test:
+    runs-on: ubuntu-latest
 
-#     services:
-#       mongo:
-#         image: mongo:latest
-#         ports:
-#           - 27017:27017
-#         options: --quiet
+    services:
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: --quiet
 
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-#       - name: Set up Node.js
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: '16'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
 
-#       - name: Set up environment variables
-#         run: echo "MONGO_URI={{ secrets.MONGO_URI }}" >> $GITHUB_ENV
+      - name: Set up environment variables
+        run: echo "MONGO_URI={{ secrets.MONGO_URI }}" >> $GITHUB_ENV
 
 
-#       - name: Install dependencies
-#         run: |
-#           cd backend
-#           npm install
+      - name: Install dependencies
+        run: |
+          cd backend
+          npm install
 
-#       - name: Run backend tests
-#         run: |
-#           cd backend
-#           npm run test
+      - name: Run backend tests
+        run: |
+          cd backend
+          npm run test
