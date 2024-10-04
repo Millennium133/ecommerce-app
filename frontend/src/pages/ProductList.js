@@ -1,34 +1,66 @@
-// frontend/src/pages/ProductList.js
+import React, { useEffect, useState } from "react";
+import Header from "../components/Header";
+import { Link } from "react-router-dom";
+import axiosInstance from "../services/axiosConfig";
 
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+const ProductList = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-function ProductList() {
-    const [products, setProducts] = useState([]);
+  useEffect(() => {
+    // Fetch products from the backend API
+    const fetchProducts = async () => {
+      try {
+        const response = await axiosInstance.get("/api/products"); // Adjust URL as needed
+        setProducts(response.data);
+        setLoading(true);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            const response = await axios.get('/api/products');
-            setProducts(response.data);
-        };
-        fetchProducts();
-    }, []);
+    fetchProducts();
+  }, []);
 
-    return (
-        <div className="grid grid-cols-3 gap-4 p-4">
-            {products.map((product) => (
-                <div key={product._id} className="border p-4">
-                    <img src={product.imageUrl} alt={product.title} className="h-32 w-full object-cover" />
-                    <h3 className="text-xl">{product.title}</h3>
-                    <p>{product.price} Coins</p>
-                    <Link to={`/product/${product._id}`}>
-                        <button className="bg-blue-500 text-white py-1 px-4 mt-2">View Details</button>
-                    </Link>
-                </div>
-            ))}
+  if (loading) return <p>Loading products...</p>;
+
+  return (
+    <div>
+      <Header />
+      <main className="container mx-auto p-4">
+        <h2 className="text-3xl font-bold mb-6 text-secondary">Products</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {products.map((product) => (
+            <div
+              key={product._id}
+              className="bg-white p-6 shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300"
+            >
+              <img
+                src={product.imageUrl}
+                alt={product.title}
+                className="w-full h-64 object-cover rounded-lg mb-4"
+              />
+              <h3 className="text-2xl font-bold text-primary mb-2">
+                {product.title}
+              </h3>
+              <p className="text-gray-500 text-lg">{product.description}</p>
+              <p className="text-xl font-bold text-accent mt-4">
+                {product.price} Coins
+              </p>
+              <Link
+                to={`/product/${product._id}`}
+                className="block mt-6 text-secondary hover:underline text-lg"
+              >
+                View Details
+              </Link>
+            </div>
+          ))}
         </div>
-    );
-}
+      </main>
+    </div>
+  );
+};
 
 export default ProductList;

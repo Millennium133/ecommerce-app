@@ -1,37 +1,58 @@
-// frontend/src/App.js
-
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import ProductList from './pages/ProductList';
-import ProductDetail from './pages/ProductDetail';
-import CartPage from './pages/CartPage';
-import CheckoutPage from './pages/CheckoutPage';
-import Register from './pages/Register';
-import Login from './pages/Login';
-// import Navbar from './components/Navbar';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import ProductList from "./pages/ProductList";
+import ProductDetail from "./pages/ProductDetail";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+import Confirmation from "./pages/Confirmation";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
-    return (
-        <>
-            <Routes>
-                <Route path="/" element={<h1>Home Page</h1>} />
-
-                <Route path="/"  element={<ProductList/>} />
-                <Route path="/product/:id" element={<ProductDetail/>} />
-                <Route path="/cart" element={<CartPage/>} />
-                <Route path="/checkout" element={<CheckoutPage/>} />
-                <Route path="/register" element={<Register/>} />
-                <Route path="/login" element={<Login/>} />
-            </Routes>  
-        {/* <div>
-            <h1>App is Running</h1>
-            <Routes>
-                <Route path="/" element={<h1>Home Page</h1>} />
-                <Route path="*" element={<h1>404: Not Found</h1>} />
-            </Routes>
-        </div> */}
-        </>
-    );
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<ProductList />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute allowedRoles={["customer"]}>
+              <Cart />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute allowedRoles={["customer", "admin"]}>
+              <Checkout />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/confirmation"
+          element={
+            <ProtectedRoute allowedRoles={["customer", "admin"]}>
+              <Confirmation />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

@@ -9,13 +9,11 @@ const protect = async (req, res, next) => {
         try {
             // Get token from header
             token = req.headers.authorization.split(' ')[1];
-
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
             // Find the user by ID and attach it to the request
             req.user = await User.findById(decoded._id).select('-password');  // Exclude password field
-
             if (!req.user) {
                 return res.status(401).json({ message: 'User not found, unauthorized' });
             }
