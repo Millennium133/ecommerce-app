@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import { Link } from "react-router-dom";
 import axiosInstance from "../services/axiosConfig";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -13,7 +14,6 @@ const ProductList = () => {
       try {
         const response = await axiosInstance.get("/api/products"); // Adjust URL as needed
         setProducts(response.data);
-        setLoading(true);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -24,7 +24,7 @@ const ProductList = () => {
     fetchProducts();
   }, []);
 
-  if (loading) return <p>Loading products...</p>;
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div>

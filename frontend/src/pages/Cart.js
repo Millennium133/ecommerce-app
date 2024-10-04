@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import axiosInstance from "../services/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
+import { FaTrash } from "react-icons/fa"; // Trash icon for removing items
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [coin, setCoin] = useState(0);
   const navigate = useNavigate();
 
   const handleCheckout = () => {
@@ -18,6 +22,8 @@ const Cart = () => {
         setCartItems(response.data.items);
       } catch (error) {
         console.error("Error fetching cart:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -29,6 +35,8 @@ const Cart = () => {
     0
   );
 
+  if (loading) return <LoadingSpinner />;
+
   return (
     <div>
       <Header />
@@ -37,7 +45,7 @@ const Cart = () => {
         <div className="space-y-4">
           {cartItems.map((item) => (
             <div
-              key={item.productId}
+              key={item.productId._id}
               className="bg-white p-6 shadow-md rounded-lg flex justify-between items-center"
             >
               <div>

@@ -4,7 +4,6 @@ const User = require("../models/User");
 const roleCheck = require("../middleware/roleMiddleware");
 const { protect } = require("../middleware/authMiddleware");
 
-// Example route for admins to manage users
 router.get("/users", protect, roleCheck("admin"), async (req, res) => {
   try {
     const users = await User.find();
@@ -13,6 +12,7 @@ router.get("/users", protect, roleCheck("admin"), async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 router.put("/promote/:id", protect, roleCheck("admin"), async (req, res) => {
   try {
     const user = await User.findById(req.params.id);

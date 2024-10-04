@@ -21,7 +21,7 @@ function App() {
         <Route
           path="/cart"
           element={
-            <ProtectedRoute allowedRoles={["customer"]}>
+            <ProtectedRoute allowedRoles={["customer", "admin"]}>
               <Cart />
             </ProtectedRoute>
           }

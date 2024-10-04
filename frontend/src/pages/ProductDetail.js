@@ -2,22 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import axiosInstance from "../services/axiosConfig";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(true);
 
-  const addToCart = async () => {
-    try {
-      const response = await axiosInstance.put("/api/cart", {
-        productId: product._id,
-        quantity: 1, // For simplicity, adding one item to the cart
-      });
-      console.log("Product added to cart:", response.data);
-    } catch (error) {
-      console.error("Error adding product to cart:", error);
-    }
-  };
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -25,15 +17,31 @@ const ProductDetail = () => {
         setProduct(response.data);
       } catch (error) {
         console.error("Error fetching product details:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProduct();
   }, [id]);
 
-  if (!product) {
-    return <p>Loading...</p>;
-  }
+  const handleQuantityChange = (change) => {
+    setQuantity((prev) => Math.max(1, prev + change));
+  };
+
+  const addToCart = async () => {
+    try {
+      const response = await axiosInstance.put("/api/cart", {
+        productId: product._id,
+        quantity: quantity, // For simplicity, adding one item to the cart
+      });
+      console.log("Product added to cart:", response.data);
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+    }
+  };
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div>
@@ -52,6 +60,21 @@ const ProductDetail = () => {
           <p className="text-2xl font-bold text-accent mb-4">
             {product.price} Coins
           </p>
+          <div className="flex items-center mb-4">
+            <button
+              onClick={() => handleQuantityChange(-1)}
+              className="px-3 py-1 bg-gray-200 rounded-l-lg"
+            >
+              -
+            </button>
+            <span className="px-6 py-2 text-xl bg-gray-100">{quantity}</span>
+            <button
+              onClick={() => handleQuantityChange(1)}
+              className="px-3 py-1 bg-gray-200 rounded-r-lg"
+            >
+              +
+            </button>
+          </div>
           <button
             onClick={addToCart}
             className="mt-4 bg-primary text-white px-6 py-3 rounded-lg text-lg hover:bg-accent transition-colors"

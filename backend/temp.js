@@ -1,5 +1,0 @@
-const dotenv = require('dotenv')
-const jwt = require('jsonwebtoken')
-const mongoose = require('mongoose')
-dotenv.config()
-console.log(jwt.sign({ _id: new mongoose.Types.ObjectId(), email: 'aong1244@gmail.com'}, process.env.JWT_SECRET, { expiresIn: '30d' }))
