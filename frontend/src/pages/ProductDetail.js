@@ -8,13 +8,23 @@ const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [currentQuantity, setCurrentQuantity] = useState(0);
+  const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await axiosInstance.get(`/api/products/${id}`); // Adjust URL as needed
+        const cartResponse = await axiosInstance.get("/api/cart");
+        const cartItems = cartResponse.data.items;
         setProduct(response.data);
+        cartItems.map((item) => {
+          if (item.productId._id === id) {
+            setCurrentQuantity(item.quantity);
+          }
+          return;
+        });
       } catch (error) {
         console.error("Error fetching product details:", error);
       } finally {
@@ -25,17 +35,19 @@ const ProductDetail = () => {
     fetchProduct();
   }, [id]);
 
-  const handleQuantityChange = (change) => {
+  const handleQuantityChange = async (change) => {
     setQuantity((prev) => Math.max(1, prev + change));
   };
 
   const addToCart = async () => {
     try {
-      const response = await axiosInstance.put("/api/cart", {
+      const overallQuantity = currentQuantity + quantity;
+      await axiosInstance.put("/api/cart", {
         productId: product._id,
-        quantity: quantity, // For simplicity, adding one item to the cart
+        quantity: overallQuantity,
       });
-      console.log("Product added to cart:", response.data);
+      setIsAddedToCart(true); // Show feedback
+      setTimeout(() => setIsAddedToCart(false), 3000);
     } catch (error) {
       console.error("Error adding product to cart:", error);
     }
@@ -81,6 +93,10 @@ const ProductDetail = () => {
           >
             Add to Cart
           </button>
+
+          {isAddedToCart && (
+            <p className="text-green-500 mt-4">Product added to cart!</p>
+          )}
         </div>
       </main>
     </div>

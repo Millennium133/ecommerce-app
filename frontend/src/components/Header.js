@@ -2,13 +2,11 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../services/axiosConfig";
 import { FaShoppingCart, FaCoins } from "react-icons/fa"; // Import icons
-
-const handleLogout = () => {
-  localStorage.removeItem("token");
-  window.location.href = "/login"; // Redirect to login after logout
-};
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
+
   const [coins, setCoins] = useState(0);
 
   useEffect(() => {
@@ -23,6 +21,11 @@ const Header = () => {
 
     fetchCoins();
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login"); // Redirect to login after logout
+  };
 
   return (
     <header className="bg-white shadow-md p-6">

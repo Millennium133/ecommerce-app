@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import axiosInstance from "../services/axiosConfig";
-
+import { useNavigate } from "react-router-dom";
 const Register = () => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -17,7 +19,7 @@ const Register = () => {
       });
       localStorage.setItem("token", response.data.token); // Save JWT token in local storage
       localStorage.setItem("role", response.data.role);
-      window.location.href = "/"; // Redirect to homepage after successful registration
+      navigate("/"); // Redirect to homepage after successful registration
     } catch (err) {
       setError("Registration failed. Try again.");
     }
