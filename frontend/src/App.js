@@ -10,11 +10,13 @@ import Checkout from "./pages/Checkout";
 import Confirmation from "./pages/Confirmation";
 import AdminDashboard from "./pages/AdminDashboard";
 import OrderHistory from "./pages/OrderHistory";
+import EditProduct from "./pages/EditProduct";
 
 function App() {
   return (
     <Router>
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<ProductList />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/login" element={<Login />} />
@@ -44,6 +46,16 @@ function App() {
           }
         />
         <Route
+          path="/orderHistory"
+          element={
+            <ProtectedRoute allowedRoles={["customer", "admin"]}>
+              <OrderHistory />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Admin Routes */}
+        <Route
           path="/admin"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
@@ -52,10 +64,10 @@ function App() {
           }
         />
         <Route
-          path="/orderHistory"
+          path="/admin/edit-product/:id"
           element={
-            <ProtectedRoute allowedRoles={["customer", "admin"]}>
-              <OrderHistory />
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <EditProduct />
             </ProtectedRoute>
           }
         />

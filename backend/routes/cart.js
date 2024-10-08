@@ -2,12 +2,13 @@
 // cart.js (backend route)
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const Cart = require("../models/Cart");
 const User = require("../models/User");
 const Product = require("../models/Product");
-const mongoose = require("mongoose");
-const { protect } = require("../middleware/authMiddleware");
 const Order = require("../models/Order");
+const { protect } = require("../middleware/authMiddleware");
+const logger = require("../utils/logger");
 
 // Get all products in the cart
 router.get("/", protect, async (req, res) => {
@@ -20,6 +21,9 @@ router.get("/", protect, async (req, res) => {
     }
     res.json(cart);
   } catch (error) {
+    logger.error(
+      `Error getting all the products in the cart: ${error.message}`
+    );
     res
       .status(500)
       .json({ message: "Error retrieving cart", error: error.message });
@@ -32,6 +36,7 @@ router.put("/", protect, async (req, res) => {
 
   // Backend validation for quantity
   if (!Number.isInteger(quantity) || quantity < 1) {
+    logger.error(`Invalidation of quantity`);
     return res
       .status(400)
       .json({ message: "Quantity must be an integer and at least 1" });
@@ -44,6 +49,7 @@ router.put("/", protect, async (req, res) => {
     }
     const product = await Product.findById(productId);
     if (!product) {
+      logger.error(`Product not found: ${productId}`);
       return res.status(404).json({ message: "Product not found" });
     }
 
@@ -65,6 +71,7 @@ router.put("/", protect, async (req, res) => {
     await cart.save();
     res.json(cart);
   } catch (error) {
+    logger.error(`Error updating cart: ${error.message}`);
     res
       .status(500)
       .json({ message: "Error updating cart", error: error.message });
@@ -76,11 +83,13 @@ router.delete("/remove/:productId", protect, async (req, res) => {
   const { productId } = req.params;
   // Check if productId is a valid ObjectId
   if (!mongoose.Types.ObjectId.isValid(productId)) {
+    logger.error(`Invalid id format: ${productId}`);
     return res.status(400).json({ message: "Invalid product ID format" });
   }
   try {
     const cart = await Cart.findOne({ userId: req.user._id });
     if (!cart) {
+      logger.error(`Cart not found: ${req.user._id}`);
       return res.status(404).json({ message: "Cart not found" });
     }
     const itemIndex = cart.items.findIndex((item) =>
@@ -91,12 +100,14 @@ router.delete("/remove/:productId", protect, async (req, res) => {
       cart.totalAmount -= product.price * cart.items[itemIndex].quantity;
       cart.items.splice(itemIndex, 1);
     } else {
+      logger.error(`Product not found in the cart: ${productId}`);
       return res.status(404).json({ message: "Product not found in cart" });
     }
 
     await cart.save();
     res.json(cart);
   } catch (error) {
+    logger.error(`Error removing product from cart: ${error.message}`);
     res.status(500).json({
       message: "Error removing product from cart",
       error: error.message,
@@ -109,6 +120,7 @@ router.delete("/clear", protect, async (req, res) => {
   try {
     const cart = await Cart.findOne({ userId: req.user._id });
     if (!cart) {
+      logger.error(`Cart not found: ${req.user._id}`);
       return res.status(404).json({ message: "Cart not found" });
     }
     cart.items = [];
@@ -116,6 +128,7 @@ router.delete("/clear", protect, async (req, res) => {
     await cart.save();
     res.json({ message: "Cart cleared successfully" });
   } catch (error) {
+    logger.error(`Error clearing cart: ${error.message}`);
     res
       .status(500)
       .json({ message: "Error clearing cart", error: error.message });
@@ -130,6 +143,7 @@ router.post("/checkout", protect, async (req, res) => {
       "items.productId"
     );
     if (!cart || cart.items.length === 0) {
+      logger.error(`Cart is empty: ${req.user._id}`);
       return res.status(400).json({ message: "Your cart is empty" });
     }
     const totalAmount = cart.items.reduce(
@@ -162,6 +176,7 @@ router.post("/checkout", protect, async (req, res) => {
       res.status(400).json({ message: "Insufficient balance" });
     }
   } catch (error) {
+    logger.error(`Error processing checkout: ${error.message}`);
     res
       .status(500)
       .json({ message: "Error processing checkout", error: error.message });

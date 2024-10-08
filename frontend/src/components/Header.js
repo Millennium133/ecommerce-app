@@ -1,12 +1,17 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../services/axiosConfig";
-import { FaShoppingCart, FaCoins } from "react-icons/fa"; // Import icons
+import { FaShoppingCart, FaCoins, FaBars } from "react-icons/fa"; // Import icons
+import { TbJewishStarFilled } from "react-icons/tb";
+import { MdDashboard } from "react-icons/md";
+import { IoLogOut } from "react-icons/io5";
+import { FaProductHunt } from "react-icons/fa";
+
 import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const navigate = useNavigate();
-
+  const [menuOpen, setMenuOpen] = useState(false);
   const [coins, setCoins] = useState(0);
 
   useEffect(() => {
@@ -27,36 +32,78 @@ const Header = () => {
     navigate("/login"); // Redirect to login after logout
   };
 
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
   return (
     <header className="bg-white shadow-md p-6">
       <div className="container mx-auto flex justify-between items-center">
         <h1 className="text-2xl font-bold text-primary">
           <Link to="/">E-Shop</Link>
         </h1>
-        <nav className="flex items-center space-x-6">
+        <div className="flex items-center space-x-6">
           <div className="flex items-center space-x-2">
-            <FaCoins className="text-yellow-500" /> {/* Coins Icon */}
+            <FaCoins className="text-yellow-500" />
             <span>{coins} Coins</span>
           </div>
-          <Link to="/" className="text-primary hover:text-text">
-            Products
-          </Link>
-          <Link
-            to="/cart"
-            className="text-primary hover:text-text flex items-center space-x-2"
-          >
-            <FaShoppingCart className="text-primary" /> {/* Cart Icon */}
-            <span>Cart</span>
-          </Link>
-
-          <button
-            onClick={handleLogout}
-            className="text-primary hover:text-text"
-          >
-            Logout
+          <button onClick={toggleMenu} className="text-primary">
+            <FaBars className="text-2xl" />
           </button>
-        </nav>
+        </div>
       </div>
+      {menuOpen && (
+        <nav className="bg-gray-100 p-6 rounded-lg mt-4">
+          <ul className="space-y-4">
+            <li>
+              <Link
+                to="/"
+                className="text-primary hover:text-text flex items-center space-x-2"
+              >
+                <FaProductHunt />
+                <span>Products</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/cart"
+                className="text-primary hover:text-text flex items-center space-x-2"
+              >
+                <FaShoppingCart className="text-primary" /> {/* Cart Icon */}
+                <span>Cart</span>
+              </Link>{" "}
+            </li>
+
+            <li>
+              <Link
+                className="text-primary hover:text-text flex items-center space-x-2"
+                to="/wishlist"
+              >
+                <TbJewishStarFilled />
+                <span>Wishlist</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                className="text-primary hover:text-text flex items-center space-x-2"
+                to="/admin"
+              >
+                <MdDashboard />
+                <span>Admin Dashboard</span>
+              </Link>
+            </li>
+            <li>
+              <button
+                onClick={handleLogout}
+                className="text-primary hover:text-text flex items-center space-x-2"
+              >
+                <IoLogOut />
+                <span>Log Out</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      )}
     </header>
   );
 };

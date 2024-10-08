@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const logger = require("../utils/logger");
 
 // User Registration
 router.post("/register", async (req, res) => {
@@ -10,6 +11,7 @@ router.post("/register", async (req, res) => {
   const userExists = await User.findOne({ email });
 
   if (userExists) {
+    logger.error(`User already exists: ${email}`);
     return res.status(400).json({ message: "User already exists" });
   }
 
@@ -32,6 +34,7 @@ router.post("/register", async (req, res) => {
       token, // Return the token upon registration
     });
   } catch (error) {
+    logger.error(`Error registering the user: ${error.message}`);
     res
       .status(500)
       .json({ message: "Error during registration", error: error.message });
@@ -45,11 +48,13 @@ router.post("/login", async (req, res) => {
     // Find the user by email
     const user = await User.findOne({ email });
     if (!user) {
+      logger.error(`Log in Failed via invalid email: ${email}`);
       return res.status(400).json({ message: "Invalid email or password" });
     }
     // Check if the password matches
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
+      logger.error(`Log in Failed via invalid password`);
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
@@ -64,6 +69,7 @@ router.post("/login", async (req, res) => {
       token,
     });
   } catch (error) {
+    logger.error(`Error during login: ${error.message}`);
     res
       .status(500)
       .json({ message: "Error during login", error: error.message });

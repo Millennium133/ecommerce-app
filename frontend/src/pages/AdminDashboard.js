@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import axiosInstance from "../services/axiosConfig";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -22,20 +22,6 @@ const AdminDashboard = () => {
     fetchData();
   }, []);
 
-  const handleEditingProduct = async (product) => {
-    try {
-      const { title, description, price, category, imageUrl } = product;
-      await axiosInstance.put(`/api/products/${product._id}`).send({
-        title,
-        description,
-        price,
-        category,
-        imageUrl,
-      });
-    } catch (error) {
-      console.error(`Error editing product: ${error}`);
-    }
-  };
   const handleDeleteProduct = async (productId) => {
     try {
       await axiosInstance.delete(`/api/products/${productId}`);
@@ -76,12 +62,12 @@ const AdminDashboard = () => {
                 <h4 className="text-xl font-bold">{product.title}</h4>
                 <p>Price: {product.price} Coins</p>
                 <div className="flex space-x-4 mt-4">
-                  <button
-                    onClick={() => handleEditingProduct(product)}
+                  <Link
+                    to={`/admin/edit-product/${product._id}`}
                     className="text-blue-500"
                   >
                     <FaEdit /> Edit
-                  </button>
+                  </Link>
                   <button
                     onClick={() => handleDeleteProduct(product._id)}
                     className="text-red-500"
