@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
-import axios from "axios";
 import ErrorPage from "../components/ErrorPage";
+import axiosInstance from "../services/axiosConfig";
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
@@ -9,7 +9,7 @@ const OrderHistory = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get("/api/orders");
+        const response = await axiosInstance.get("/api/orders");
         setOrders(response.data);
       } catch (error) {
         setError(`Error fetching orders: ${error}`);

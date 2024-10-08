@@ -7,6 +7,7 @@ const User = require("../models/User");
 const Product = require("../models/Product");
 const mongoose = require("mongoose");
 const { protect } = require("../middleware/authMiddleware");
+const Order = require("../models/Order");
 
 // Get all products in the cart
 router.get("/", protect, async (req, res) => {
@@ -136,6 +137,20 @@ router.post("/checkout", protect, async (req, res) => {
       0
     );
     if (user.coins >= totalAmount) {
+      const orderItems = cart.items.map((item) => ({
+        productId: item.productId._id,
+        title: item.productId.title,
+        quantity: item.quantity,
+        price: item.productId.price,
+      }));
+
+      const orderHistory = new Order({
+        userId: req.user._id,
+        items: orderItems,
+        totalAmount: totalAmount,
+      });
+      await orderHistory.save();
+
       user.coins -= totalAmount;
       await user.save();
 

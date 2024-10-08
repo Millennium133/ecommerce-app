@@ -9,6 +9,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Confirmation from "./pages/Confirmation";
 import AdminDashboard from "./pages/AdminDashboard";
+import OrderHistory from "./pages/OrderHistory";
 
 function App() {
   return (
@@ -47,6 +48,14 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orderHistory"
+          element={
+            <ProtectedRoute allowedRoles={["customer", "admin"]}>
+              <OrderHistory />
             </ProtectedRoute>
           }
         />
