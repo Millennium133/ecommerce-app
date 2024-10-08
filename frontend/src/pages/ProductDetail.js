@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import axiosInstance from "../services/axiosConfig";
 import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorPage from "../components/ErrorPage";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -11,6 +12,7 @@ const ProductDetail = () => {
   const [currentQuantity, setCurrentQuantity] = useState(0);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -19,14 +21,14 @@ const ProductDetail = () => {
         const cartResponse = await axiosInstance.get("/api/cart");
         const cartItems = cartResponse.data.items;
         setProduct(response.data);
-        cartItems.map((item) => {
+        cartItems.forEach((item) => {
           if (item.productId._id === id) {
             setCurrentQuantity(item.quantity);
           }
           return;
         });
       } catch (error) {
-        console.error("Error fetching product details:", error);
+        setError(`Error fetching product details: ${error}`);
       } finally {
         setLoading(false);
       }
@@ -49,11 +51,12 @@ const ProductDetail = () => {
       setIsAddedToCart(true); // Show feedback
       setTimeout(() => setIsAddedToCart(false), 3000);
     } catch (error) {
-      console.error("Error adding product to cart:", error);
+      console.error(`Error adding product to cart: ${error}`);
     }
   };
 
   if (loading) return <LoadingSpinner />;
+  if (error) return <ErrorPage message={error} />;
 
   return (
     <div>

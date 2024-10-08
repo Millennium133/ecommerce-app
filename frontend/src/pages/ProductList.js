@@ -3,10 +3,12 @@ import Header from "../components/Header";
 import { Link } from "react-router-dom";
 import axiosInstance from "../services/axiosConfig";
 import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorPage from "../components/ErrorPage";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     // Fetch products from the backend API
@@ -15,7 +17,7 @@ const ProductList = () => {
         const response = await axiosInstance.get("/api/products"); // Adjust URL as needed
         setProducts(response.data);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        setError(`Error fetching products: ${error}`);
       } finally {
         setLoading(false);
       }
@@ -25,6 +27,7 @@ const ProductList = () => {
   }, []);
 
   if (loading) return <LoadingSpinner />;
+  if (error) return <ErrorPage message={error} />;
 
   return (
     <div>

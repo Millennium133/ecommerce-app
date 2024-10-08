@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import axios from "axios";
+import ErrorPage from "../components/ErrorPage";
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
-
+  const [error, setError] = useState("");
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get("/api/orders");
         setOrders(response.data);
       } catch (error) {
-        console.error("Error fetching orders:", error);
+        setError(`Error fetching orders: ${error}`);
       }
     };
 
     fetchOrders();
   }, []);
+
+  if (error) return <ErrorPage message={error} />;
 
   return (
     <div>

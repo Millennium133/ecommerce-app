@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import axiosInstance from "../services/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorPage from "../components/ErrorPage";
 
 const Checkout = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -16,7 +17,7 @@ const Checkout = () => {
         const response = await axiosInstance.get("/api/cart");
         setCartItems(response.data.items);
       } catch (err) {
-        setError("Failed to load cart");
+        setError(`Failed to load cart: ${err}`);
       } finally {
         setLoading(false);
       }
@@ -34,12 +35,12 @@ const Checkout = () => {
       await axiosInstance.post("/api/cart/checkout");
       navigate("/confirmation");
     } catch (err) {
-      setError("Checkout failed. Please try again.");
+      setError(`Checkout failed. Please try again. ${err}`);
     }
   };
 
   if (loading) return <LoadingSpinner />;
-  if (error) return <p>{error}</p>;
+  if (error) return <ErrorPage message={error} />;
 
   return (
     <div>

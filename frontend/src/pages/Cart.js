@@ -4,6 +4,7 @@ import axiosInstance from "../services/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { FaTrash } from "react-icons/fa"; // Trash icon for removing items
+import ErrorPage from "../components/ErrorPage";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -11,6 +12,7 @@ const Cart = () => {
   const [coins, setCoins] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
   const [error, setError] = useState("");
+  const [criticalError, setCriticalError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,7 +24,7 @@ const Cart = () => {
         setCoins(coinsResponse.data.coins);
         calculateTotal(cartResponse.data.items);
       } catch (error) {
-        console.error("Error fetching cart or coins:", error);
+        setCriticalError(`Error fetching cart or coins: ${error}`);
       } finally {
         setLoading(false);
       }
@@ -78,6 +80,7 @@ const Cart = () => {
   };
 
   if (loading) return <LoadingSpinner />;
+  if (criticalError) return <ErrorPage message={criticalError} />;
 
   return (
     <div>
