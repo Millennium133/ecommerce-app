@@ -11,6 +11,8 @@ import Confirmation from "./pages/Confirmation";
 import AdminDashboard from "./pages/AdminDashboard";
 import OrderHistory from "./pages/OrderHistory";
 import EditProduct from "./pages/EditProduct";
+import Wishlist from "./pages/Wishlist";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -50,6 +52,22 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["customer", "admin"]}>
               <OrderHistory />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/wishlist"
+          element={
+            <ProtectedRoute allowedRoles={["customer", "admin"]}>
+              <Wishlist />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile/"
+          element={
+            <ProtectedRoute allowedRoles={["customer", "admin"]}>
+              <Profile />
             </ProtectedRoute>
           }
         />

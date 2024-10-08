@@ -2,9 +2,11 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
+const User = require("../models/User");
 const { protect } = require("../middleware/authMiddleware");
 const roleCheck = require("../middleware/roleMiddleware");
 const logger = require("../utils/logger");
+const Wishlist = require("../models/Wishlist");
 // Get all products
 router.get("/", async (req, res) => {
   try {
@@ -39,12 +41,26 @@ router.put("/:id", protect, roleCheck("admin"), async (req, res) => {
       logger.error(`Product not found: ${req.params.id}`);
       return res.status(404).json({ message: "Product not found" });
     }
+    const oldPrice = product.price;
+
     product.title = title;
     product.description = description;
     product.price = price;
     product.category = category;
     product.imageUrl = imageUrl;
     await product.save();
+
+    if (oldPrice < oldPrice) {
+      const wishlists = await Wishlist.find({ productId: product._id });
+      wishlists.forEach(async (wishlistItem) => {
+        const newNotification = new Notification({
+          userId: wishlistItem.userId,
+          message: `The price of "${product.title}" has dropped to ${price} Coins.`,
+        });
+        await newNotification.save();
+      });
+    }
+
     res.json(product);
   } catch (error) {
     logger.error(`Error updating product: ${error.message}`);
@@ -63,6 +79,17 @@ router.post("/", protect, roleCheck("admin"), async (req, res) => {
       imageUrl,
     });
     const savedProduct = await newProduct.save();
+
+    // Notify all users about the new product
+    const users = await User.find();
+    users.forEach(async (user) => {
+      const newNotification = new Notification({
+        userId: user._id,
+        message: `A new product "${title}" has been added.`,
+      });
+      await newNotification.save();
+    });
+
     res.json(savedProduct);
   } catch (error) {
     logger.error(`Error updating product: ${error.message}`);

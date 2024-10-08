@@ -6,12 +6,13 @@ import { TbJewishStarFilled } from "react-icons/tb";
 import { MdDashboard } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
 import { FaProductHunt } from "react-icons/fa";
-
+import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const [coins, setCoins] = useState(0);
 
   useEffect(() => {
@@ -55,6 +56,15 @@ const Header = () => {
       {menuOpen && (
         <nav className="bg-gray-100 p-6 rounded-lg mt-4">
           <ul className="space-y-4">
+            <li>
+              <Link
+                to="/profile"
+                className="text-primary hover:text-text flex items-center space-x-2"
+              >
+                <CgProfile />
+                <span>Profile</span>
+              </Link>
+            </li>
             <li>
               <Link
                 to="/"
