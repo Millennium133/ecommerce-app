@@ -7,6 +7,7 @@ const { protect } = require("../middleware/authMiddleware");
 const roleCheck = require("../middleware/roleMiddleware");
 const logger = require("../utils/logger");
 const Wishlist = require("../models/Wishlist");
+const Notification = require("../models/Notification");
 // Get all products
 router.get("/", async (req, res) => {
   try {
@@ -50,7 +51,7 @@ router.put("/:id", protect, roleCheck("admin"), async (req, res) => {
     product.imageUrl = imageUrl;
     await product.save();
 
-    if (oldPrice < oldPrice) {
+    if (price < oldPrice) {
       const wishlists = await Wishlist.find({ productId: product._id });
       wishlists.forEach(async (wishlistItem) => {
         const newNotification = new Notification({

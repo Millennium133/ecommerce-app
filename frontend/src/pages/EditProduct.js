@@ -11,6 +11,7 @@ const EditProduct = () => {
   const [category, setCategory] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,9 +41,11 @@ const EditProduct = () => {
         category,
         imageUrl,
       });
+      setIsError(false);
       setMessage("Product updated successfully");
       setTimeout(() => navigate("/admin"), 2000); // Redirect to Admin Dashboard after 2 seconds
     } catch (error) {
+      setIsError(true);
       setMessage("Error updating product");
     }
   };
@@ -52,7 +55,13 @@ const EditProduct = () => {
       <Header />
       <main className="container mx-auto p-6">
         <h2 className="text-3xl font-bold mb-6">Edit Product</h2>
-        {message && <p>{message}</p>}
+        {message && (
+          <p
+            className={`text-xl ${isError ? "text-red-500" : "text-green-500"}`}
+          >
+            {message}
+          </p>
+        )}
         <form onSubmit={handleEditProduct}>
           <div className="mb-4">
             <label className="block">Title</label>
@@ -100,6 +109,7 @@ const EditProduct = () => {
               required
             />
           </div>
+
           <button
             type="submit"
             className="bg-primary text-white p-3 rounded-lg"

@@ -2,24 +2,23 @@ import React, { useState, useEffect } from "react";
 import axiosInstance from "../services/axiosConfig";
 import ErrorPage from "../components/ErrorPage";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { useParams } from "react-router-dom";
+import Header from "../components/Header";
+import { FaCoins, FaEnvelope, FaUser, FaUserEdit } from "react-icons/fa";
 
 const Profile = () => {
-  const { id } = useParams();
-
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [role, setRole] = useState("customer");
   const [coins, setCoins] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isError, setIsError] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await axiosInstance.get("/api/user/profile"); // API call to get user details
-        console.log(response.data);
         setEmail(response.data.email);
         setName(response.data.name);
         setRole(response.data.role);
@@ -37,13 +36,16 @@ const Profile = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await axiosInstance.put(`/api/profile/${id}`, {
+      await axiosInstance.put(`/api/user/profile`, {
         name,
         email,
       });
-      setMessage("User updated successfully");
+      setIsError(false);
+      setMessage("Profile updated successfully");
+      setTimeout(() => setMessage(""), 3000);
     } catch (error) {
-      setMessage("Error updating product");
+      setIsError(true);
+      setMessage("Error updating Profile");
     }
   };
 
@@ -51,50 +53,82 @@ const Profile = () => {
   if (error) return <ErrorPage message={error} />;
 
   return (
-    <div className="container mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-6">Profile</h2>
-      <form onSubmit={handleUpdate}>
-        <div className="mb-4">
-          <label className="block">Email</label>
-          <input
-            type="email"
-            value={email}
-            className="border p-2 w-full"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block">Name</label>
-          <input
-            type="text"
-            value={name}
-            className="border p-2 w-full"
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
+    <div className="min-h-screen bg-gray-100">
+      <Header />
+      <div className="container mx-auto p-6">
+        <div className="max-w-xl mx-auto bg-white shadow-lg rounded-lg p-8">
+          <h2 className="text-4xl font-bold text-center text-primary mb-6">
+            Profile
+          </h2>
+          {message && (
+            <p
+              className={`text-center text-xl mb-6 ${
+                isError ? "text-red-500" : "text-green-500"
+              }`}
+            >
+              {message}
+            </p>
+          )}
 
-        <div className="mb-4">
-          <label className="block">role</label>
-          <input
-            type="text"
-            value={role}
-            className="border p-2 w-full"
-            readOnly
-          />
+          <form onSubmit={handleUpdate} className="space-y-6">
+            <div className="mb-3">
+              <label className="block text-lg font-semibold mb-2">
+                {" "}
+                <FaEnvelope className="inline mb-1 text-gray-600" /> Email
+              </label>
+              <input
+                type="email"
+                value={email}
+                className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-lg font-semibold mb-2">
+                {" "}
+                <FaUser className="inline mb-1 text-gray-600" /> Name
+              </label>
+              <input
+                type="text"
+                value={name}
+                className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-lg font-semibold mb-2">
+                {" "}
+                <FaUserEdit className="inline mb-1 text-gray-600" /> Role
+              </label>
+              <input
+                type="text"
+                value={role}
+                className="border border-gray-300 p-3 w-full rounded-lg bg-gray-100 cursor-not-allowed"
+                readOnly
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-lg font-semibold mb-2">
+                {" "}
+                <FaCoins className="inline mb-1 text-yellow-500" /> Coins
+              </label>
+              <input
+                type="number"
+                value={coins}
+                className="border border-gray-300 p-3 w-full rounded-lg bg-gray-100 cursor-not-allowed"
+                readOnly
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-primary text-white p-3 w-full rounded-lg hover:bg-primary-dark transition-all"
+            >
+              Update Profile
+            </button>
+          </form>
         </div>
-        <div className="mb-4">
-          <label className="block">coins</label>
-          <input
-            type="number"
-            value={coins}
-            className="border p-2 w-full"
-            readOnly
-          />
-        </div>
-        <button type="submit" className="bg-primary text-white p-3 rounded-lg">
-          Update Profile
-        </button>
-      </form>
+      </div>
     </div>
   );
 };

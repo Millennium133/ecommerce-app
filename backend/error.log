@@ -1,1 +1,4 @@
 {"level":"error","message":"Error updating product: Product validation failed: category: Path `category` is required."}
+{"level":"error","message":"Error removing product from wishlist by ID: Cast to ObjectId failed for value \"[object Object]\" (type string) at path \"productId\" for model \"Wishlist\""}
+{"level":"error","message":"Error getting the profile: User validation failed: password: Path `password` is required."}
+{"level":"error","message":"Error getting the profile: User validation failed: password: Path `password` is required."}

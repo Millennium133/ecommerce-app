@@ -26,7 +26,7 @@ const Wishlist = () => {
   const handleRemove = async (productId) => {
     try {
       await axiosInstance.delete(`/api/wishlist/${productId}`);
-      setWishlist(wishlist.filter((item) => item.productId !== productId));
+      setWishlist(wishlist.filter((item) => item.productId._id !== productId));
     } catch (error) {
       setError(`Error removing product from wishlist: ${error}`);
     }
@@ -46,12 +46,26 @@ const Wishlist = () => {
           <div className="space-y-4">
             {wishlist.map((item) => (
               <div
-                key={item.productId}
+                key={item.productId._id}
                 className="bg-white p-6 shadow-md rounded-lg flex justify-between items-center"
               >
-                <h3 className="text-xl font-bold">{item.title}</h3>
+                <div className="flex items-center space-x-4">
+                  <img
+                    src={item.productId.imageUrl}
+                    alt={item.productId.title}
+                    className="w-20 h-20 object-cover rounded-lg"
+                  />
+                  <div>
+                    <h3 className="text-xl font-bold text-primary">
+                      {item.productId.title}
+                    </h3>
+                    <p className="text-gray-500">
+                      Price: {item.productId.price} Coins
+                    </p>
+                  </div>
+                </div>
                 <button
-                  onClick={() => handleRemove(item.productId)}
+                  onClick={() => handleRemove(item.productId._id)}
                   className="text-red-500"
                 >
                   Remove

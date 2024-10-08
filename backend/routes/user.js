@@ -36,9 +36,9 @@ router.get("/profile", protect, async (req, res) => {
 });
 
 // Update profile
-router.put("/profile/", protect, async (req, res) => {
+router.put("/profile", protect, async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email } = req.body;
     const user = await User.findById(req.user._id);
     if (!user) {
       logger.error(`User not found: ${req.user._id}`);
@@ -46,7 +46,6 @@ router.put("/profile/", protect, async (req, res) => {
     }
     user.name = name;
     user.email = email;
-    user.password = password;
     await user.save();
     res.json(user);
   } catch (error) {
