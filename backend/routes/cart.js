@@ -137,6 +137,7 @@ router.delete("/clear", protect, async (req, res) => {
 
 // Checkout
 router.post("/checkout", protect, async (req, res) => {
+  console.log(req.body);
   try {
     const user = await User.findById(req.user._id);
     const cart = await Cart.findOne({ userId: req.user._id }).populate(
@@ -162,6 +163,9 @@ router.post("/checkout", protect, async (req, res) => {
         userId: req.user._id,
         items: orderItems,
         totalAmount: totalAmount,
+        status: "pending",
+        shippingAddress: req.body.shippingAddress,
+        paymentMethod: req.body.paymentMethod,
       });
       await orderHistory.save();
 

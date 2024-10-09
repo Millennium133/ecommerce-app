@@ -12,7 +12,7 @@ const Profile = () => {
   const [coins, setCoins] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [isError, setIsError] = useState(false);
+  const [isFailed, setIsFailed] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -40,11 +40,11 @@ const Profile = () => {
         name,
         email,
       });
-      setIsError(false);
+      setIsFailed(false);
       setMessage("Profile updated successfully");
       setTimeout(() => setMessage(""), 3000);
     } catch (error) {
-      setIsError(true);
+      setIsFailed(true);
       setMessage("Error updating Profile");
     }
   };
@@ -63,7 +63,7 @@ const Profile = () => {
           {message && (
             <p
               className={`text-center text-xl mb-6 ${
-                isError ? "text-red-500" : "text-green-500"
+                isFailed ? "text-red-500" : "text-green-500"
               }`}
             >
               {message}

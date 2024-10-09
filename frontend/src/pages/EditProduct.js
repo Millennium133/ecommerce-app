@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import axiosInstance from "../services/axiosConfig";
 import { useParams, useNavigate } from "react-router-dom";
+import ErrorPage from "../components/ErrorPage";
 
 const EditProduct = () => {
   const { id } = useParams(); // Get the product ID from the URL
@@ -11,7 +12,8 @@ const EditProduct = () => {
   const [category, setCategory] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [message, setMessage] = useState("");
-  const [isError, setIsError] = useState(false);
+  const [isFailed, setIsFailed] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,7 +27,7 @@ const EditProduct = () => {
         setCategory(product.category);
         setImageUrl(product.imageUrl);
       } catch (error) {
-        console.error("Error fetching product:", error);
+        setError("Error fetching product:", error);
       }
     };
     fetchProduct();
@@ -41,14 +43,16 @@ const EditProduct = () => {
         category,
         imageUrl,
       });
-      setIsError(false);
+      setIsFailed(false);
       setMessage("Product updated successfully");
       setTimeout(() => navigate("/admin"), 2000); // Redirect to Admin Dashboard after 2 seconds
     } catch (error) {
-      setIsError(true);
+      setIsFailed(true);
       setMessage("Error updating product");
     }
   };
+
+  if (error) return <ErrorPage message={error} />;
 
   return (
     <div>
@@ -57,7 +61,9 @@ const EditProduct = () => {
         <h2 className="text-3xl font-bold mb-6">Edit Product</h2>
         {message && (
           <p
-            className={`text-xl ${isError ? "text-red-500" : "text-green-500"}`}
+            className={`text-xl ${
+              isFailed ? "text-red-500" : "text-green-500"
+            }`}
           >
             {message}
           </p>

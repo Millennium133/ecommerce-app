@@ -19,10 +19,24 @@ function App() {
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<ProductList />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute allowedRoles={["customer", "admin"]}>
+              <ProductList />{" "}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/product/:id"
+          element={
+            <ProtectedRoute allowedRoles={["customer", "admin"]}>
+              <ProductDetail />{" "}
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/cart"
           element={

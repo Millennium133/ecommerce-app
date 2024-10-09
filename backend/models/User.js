@@ -17,7 +17,31 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: function () {
+        return !this.googleId && !this.facebookId;
+      },
+      minLength: 6,
+    },
+
+    facebookId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    provider: {
+      type: String,
+      enum: ["email", "google", "facebook"],
+      default: "email",
+    },
+    coins: {
+      type: Number,
+      required: false,
+      default: 10000, // Initial coin balance
     },
     role: {
       type: String,
@@ -25,18 +49,13 @@ const userSchema = new mongoose.Schema(
       default: "customer",
       required: true,
     },
-    coins: {
-      type: Number,
-      required: false,
-      default: 10000, // Initial coin balance
-    },
   },
   { timestamps: true }
 );
 
 // Hash the user's password before saving to the database
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
+  if (!this.password || !this.isModified("password")) {
     return next();
   }
   const salt = await bcrypt.genSalt(10);
@@ -53,7 +72,7 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 userSchema.methods.generateAuthToken = function () {
   const jwt = require("jsonwebtoken");
   return jwt.sign(
-    { _id: this._id, email: this.email },
+    { _id: this._id, email: this.email, role: this.role },
     process.env.JWT_SECRET,
     { expiresIn: "30d" }
   );

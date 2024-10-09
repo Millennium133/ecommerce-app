@@ -38,7 +38,7 @@ if (process.env.NODE_ENV !== "test") {
   mongoose
     .connect(process.env.MONGO_URI)
     .then(() => {
-      app.listen(PORT, () => {
+      app.listen(PORT, "localhost", () => {
         console.log(`Server running on port ${PORT}`);
       });
     })

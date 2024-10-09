@@ -2,3 +2,8 @@
 {"level":"error","message":"Error removing product from wishlist by ID: Cast to ObjectId failed for value \"[object Object]\" (type string) at path \"productId\" for model \"Wishlist\""}
 {"level":"error","message":"Error getting the profile: User validation failed: password: Path `password` is required."}
 {"level":"error","message":"Error getting the profile: User validation failed: password: Path `password` is required."}
+{"level":"error","message":"Error processing checkout: Order validation failed: paymentMethod: Path `paymentMethod` is required."}
+{"level":"error","message":"Error processing checkout: Order validation failed: paymentMethod: Path `paymentMethod` is required."}
+{"level":"error","message":"Error processing checkout: Order validation failed: paymentMethod: Path `paymentMethod` is required."}
+{"level":"error","message":"Error processing checkout: Order validation failed: paymentMethod: Path `paymentMethod` is required."}
+{"level":"error","message":"Log in Failed via invalid password"}

@@ -18,7 +18,6 @@ const ProductList = () => {
       try {
         const productResponse = await axiosInstance.get("/api/products");
         const wishlistResponse = await axiosInstance.get("/api/wishlist");
-        console.log(wishlistResponse.data);
         setProducts(productResponse.data);
         setWishlist(wishlistResponse.data.map((item) => item.productId._id));
       } catch (error) {
