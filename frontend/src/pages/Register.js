@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axiosInstance from "../services/axiosConfig";
 import { useNavigate } from "react-router-dom";
+
 const Register = () => {
   const navigate = useNavigate();
 
@@ -26,44 +27,62 @@ const Register = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Register</h2>
-      <form onSubmit={handleRegister}>
-        <div className="mb-4">
-          <label className="block">Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="border p-2 w-full"
-            required
-          />
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-green-300 via-blue-300 to-purple-300">
+      <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+        <h2 className="text-3xl font-semibold text-center mb-6 text-gray-800">
+          Create an Account
+        </h2>
+        <form onSubmit={handleRegister} className="space-y-4">
+          <div>
+            <label className="block text-gray-700">Name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="border border-gray-300 p-2 w-full rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary transition duration-150"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="border border-gray-300 p-2 w-full rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary transition duration-150"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="border border-gray-300 p-2 w-full rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary transition duration-150"
+              required
+            />
+          </div>
+          {error && <p className="text-red-500">{error}</p>}
+          <button
+            type="submit"
+            className="bg-primary text-white p-2 w-full rounded-lg shadow hover:bg-primary-dark transition duration-150"
+          >
+            Register
+          </button>
+        </form>
+        <div className="mt-6 text-center">
+          <p className="text-gray-600">
+            Already have an account?{" "}
+            <a
+              href="/login"
+              className="text-primary hover:underline transition duration-150"
+            >
+              Log in here
+            </a>
+          </p>
         </div>
-        <div className="mb-4">
-          <label className="block">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="border p-2 w-full"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border p-2 w-full"
-            required
-          />
-        </div>
-        {error && <p className="text-red-500">{error}</p>}
-        <button type="submit" className="bg-primary text-white p-2">
-          Register
-        </button>
-      </form>
+      </div>
     </div>
   );
 };
