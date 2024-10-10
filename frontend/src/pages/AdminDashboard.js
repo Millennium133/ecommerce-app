@@ -15,6 +15,8 @@ const AdminDashboard = () => {
         setProducts(productResponse.data);
         setUsers(userResponse.data);
       } catch (error) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
         console.error("Error fetching users:", error);
       }
     };

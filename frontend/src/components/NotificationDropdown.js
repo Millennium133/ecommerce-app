@@ -1,5 +1,9 @@
 import { FaBell } from "react-icons/fa";
+import { useEffect } from "react"; // Import useEffect for real-time notification handling
 import axiosInstance from "../services/axiosConfig";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3001"); // Adjust the server URL as needed
 
 const NotificationDropdown = ({
   notifications,
@@ -8,6 +12,36 @@ const NotificationDropdown = ({
   setNotifications,
 }) => {
   const unseenCount = notifications.filter((n) => !n.seen).length;
+
+  // Real-time notifications with Socket.IO
+  useEffect(() => {
+    // Listen for real-time notifications from the server
+    socket.on("notification", (notification) => {
+      console.log(`Notification: ${JSON.stringify(notification)}`);
+
+      // Update notifications in the state with the new notification
+      setNotifications((prev) => {
+        console.log(`prev: ${JSON.stringify(prev)}`);
+        const notificationIndex = prev.findIndex(
+          (n) =>
+            n._id === notification._id && n.message === notification.message
+        );
+
+        if (notificationIndex !== -1) {
+          const updatedNotifications = [...prev];
+          updatedNotifications[notificationIndex] = notification;
+          return updatedNotifications;
+        } else {
+          return [...prev, notification];
+        }
+      });
+    });
+
+    // Clean up the socket connection when the component unmounts
+    return () => {
+      socket.off("notification");
+    };
+  }, [setNotifications]);
 
   const markAsSeen = async (notificationId) => {
     try {
@@ -19,6 +53,20 @@ const NotificationDropdown = ({
       );
     } catch (error) {
       console.error("Error marking notification as seen:", error);
+    }
+  };
+
+  const markAll = async (notifications) => {
+    // Use a map to create an array of promises
+    const markPromises = notifications.map((notification) =>
+      markAsSeen(notification._id)
+    );
+
+    try {
+      // Await all promises to resolve
+      await Promise.all(markPromises);
+    } catch (error) {
+      console.error("Error marking notifications as seen:", error);
     }
   };
 
@@ -55,26 +103,31 @@ const NotificationDropdown = ({
           {notifications.length === 0 ? (
             <p className="text-gray-500">No notifications</p>
           ) : (
-            <ul>
-              {notifications.map((notification) => (
-                <li
-                  key={notification._id}
-                  className={`p-2 border-b ${
-                    notification.seen ? "text-gray-400" : "text-black"
-                  }`}
-                >
-                  <p>{notification.message}</p>
-                  {!notification.seen && (
-                    <button
-                      onClick={() => markAsSeen(notification._id)}
-                      className="text-blue-500 text-sm mt-1"
-                    >
-                      Mark as Seen
-                    </button>
-                  )}
-                </li>
-              ))}
-            </ul>
+            <div>
+              <button onClick={() => markAll(notifications)} className="mb-2">
+                mark all
+              </button>
+              <ul>
+                {notifications.map((notification) => (
+                  <li
+                    key={notification._id}
+                    className={`p-2 border-b ${
+                      notification.seen ? "text-gray-400" : "text-black"
+                    }`}
+                  >
+                    <p>{notification.message}</p>
+                    {!notification.seen && (
+                      <button
+                        onClick={() => markAsSeen(notification._id)}
+                        className="text-blue-500 text-sm mt-1"
+                      >
+                        Mark as Seen
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
       )}

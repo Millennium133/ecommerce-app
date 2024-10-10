@@ -51,7 +51,6 @@ const Login = () => {
 
   const handleGoogleSuccess = async (response) => {
     try {
-      console.log(response);
       const res = await axiosInstance.post("/api/auth/google-login", {
         googleToken: response.credential,
       });

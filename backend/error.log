@@ -15,3 +15,14 @@
 {"level":"error","message":"Error logging in the Google: googleResponse is not defined"}
 {"level":"error","message":"Error logging in the Google: Request failed with status code 400"}
 {"level":"error","message":"Error logging in the Google: Request failed with status code 400"}
+{"level":"error","message":"Log in Failed via invalid password"}
+{"level":"error","message":"Error marking notification as seen: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Notification\""}
+{"level":"error","message":"Error marking notification as seen: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Notification\""}
+{"level":"error","message":"Error marking notification as seen: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Notification\""}
+{"level":"error","message":"Error marking notification as seen: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Notification\""}
+{"level":"error","message":"Error marking notification as seen: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Notification\""}
+{"level":"error","message":"Error marking notification as seen: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Notification\""}
+{"level":"error","message":"Error marking notification as seen: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Notification\""}
+{"level":"error","message":"Error marking notification as seen: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Notification\""}
+{"level":"error","message":"Error marking notification as seen: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Notification\""}
+{"level":"error","message":"Error marking notification as seen: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Notification\""}
