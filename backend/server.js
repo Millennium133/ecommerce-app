@@ -2,8 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
-
 const app = express();
+const session = require("express-session");
+
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/product");
 const cartRoutes = require("./routes/cart");
@@ -16,9 +17,15 @@ const notificationRoutes = require("./routes/notifications");
 if (process.env.NODE_ENV !== "test") {
   dotenv.config();
 }
-
 // Middleware
 app.use(express.json());
+app.use(
+  session({
+    secret: process.env.JWT_SECRET, // A secret key for signing the session ID cookie
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 app.use(cors());
 
 // Routes

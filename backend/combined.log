@@ -7,3 +7,4 @@
 {"level":"error","message":"Error processing checkout: Order validation failed: paymentMethod: Path `paymentMethod` is required."}
 {"level":"error","message":"Error processing checkout: Order validation failed: paymentMethod: Path `paymentMethod` is required."}
 {"level":"error","message":"Log in Failed via invalid password"}
+{"level":"error","message":"User already exists: aong1244@gmail.com"}

@@ -1,10 +1,10 @@
 //routes/auth.js
 const express = require("express");
-const passport = require("passport");
-const jwt = require("jsonwebtoken");
 const axios = require("axios");
+
 const User = require("../models/User");
 const logger = require("../utils/logger");
+
 const router = express.Router();
 
 // User Registration
@@ -112,9 +112,7 @@ router.post("/google-login", async (req, res) => {
   }
 });
 
-module.exports = router;
-
-// Facebook Login Handler
+// Facebook Login Handler: token-based
 router.post("/facebook-login", async (req, res) => {
   const { accessToken } = req.body;
   try {

@@ -25,6 +25,31 @@ const Login = () => {
     }
   };
 
+  const handleFacebookLogout = () => {
+    window.FB.logout();
+  };
+
+  const handleFacebookSuccess = async (response) => {
+    // Log the user out of Facebook to allow switching accounts
+    handleFacebookLogout();
+
+    if (!response.accessToken) {
+      // If the user pressed "cancel" or there was an error, display an error message
+      setError("Facebook login canceled. Please try again.");
+      return;
+    }
+    try {
+      const res = await axiosInstance.post("/api/auth/facebook-login", {
+        accessToken: response.accessToken,
+      });
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", res.data.role);
+      navigate("/");
+    } catch (error) {
+      setError("Facebook login failed. Please try again.");
+    }
+  };
+
   const handleGoogleSuccess = async (response) => {
     try {
       const res = await axiosInstance.post("/api/auth/google-login", {
@@ -35,19 +60,6 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       setError("Google login failed. Please try again.");
-    }
-  };
-
-  const handleFacebookSuccess = async (response) => {
-    try {
-      const res = await axiosInstance.post("/api/auth/facebook-login", {
-        accessToken: response.accessToken,
-      });
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.role);
-      navigate("/");
-    } catch (error) {
-      setError("Facebook login failed. Please try again.");
     }
   };
 
