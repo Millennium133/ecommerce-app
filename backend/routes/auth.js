@@ -1,10 +1,12 @@
 //routes/auth.js
 const express = require("express");
 const axios = require("axios");
+const { OAuth2Client } = require("google-auth-library");
 
 const User = require("../models/User");
 const logger = require("../utils/logger");
 
+const client = new OAuth2Client();
 const router = express.Router();
 
 // User Registration
@@ -81,33 +83,36 @@ router.post("/login", async (req, res) => {
 
 // Google Login Handler
 router.post("/google-login", async (req, res) => {
-  const { token } = req.body;
-
   try {
-    // Verify Google Token
+    const { googleToken } = req.body;
     const googleResponse = await axios.get(
-      `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${googleToken}`
     );
-
     const { email, name, sub: googleId } = googleResponse.data;
 
     // Find or create user in database
-    let user = await User.findOne({ googleId });
-    if (!user) {
-      const createdUser = new User({
+    let user = await User.findOne({ email });
+    if (user) {
+      if (!user.googleId) {
+        user.googleId = googleId;
+        await user.save(); // Save the updated user
+      }
+    } else {
+      user = new User({
         email,
         name,
         googleId,
         provider: "google",
         role: "customer",
       });
-      await createdUser.save();
+      await user.save();
     }
 
     const token = user.generateAuthToken(); // JWT token generation
 
     res.json({ role: user.role, token });
   } catch (error) {
+    logger.error(`Error logging in the Google: ${error.message}`);
     res.status(401).json({ error: "Google login failed" });
   }
 });
@@ -145,6 +150,7 @@ router.post("/facebook-login", async (req, res) => {
     const token = user.generateAuthToken(); // JWT token generation
     res.json({ role: user.role, token });
   } catch (error) {
+    logger.error(`Error logging in the Facebook: ${error.message}`);
     res.status(401).json({ error });
   }
 });

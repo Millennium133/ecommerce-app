@@ -26,7 +26,11 @@ app.use(
     saveUninitialized: true,
   })
 );
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 // Routes
 app.use("/api/auth", authRoutes);

@@ -3,6 +3,7 @@ import axiosInstance from "../services/axiosConfig";
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import FacebookLogin from "react-facebook-login";
+import { FaFacebook } from "react-icons/fa"; // Import Facebook icon
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -30,11 +31,9 @@ const Login = () => {
   };
 
   const handleFacebookSuccess = async (response) => {
-    // Log the user out of Facebook to allow switching accounts
     handleFacebookLogout();
 
     if (!response.accessToken) {
-      // If the user pressed "cancel" or there was an error, display an error message
       setError("Facebook login canceled. Please try again.");
       return;
     }
@@ -52,8 +51,9 @@ const Login = () => {
 
   const handleGoogleSuccess = async (response) => {
     try {
+      console.log(response);
       const res = await axiosInstance.post("/api/auth/google-login", {
-        token: response.credential,
+        googleToken: response.credential,
       });
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
@@ -73,6 +73,8 @@ const Login = () => {
         <h2 className="text-3xl font-semibold text-center mb-6 text-gray-800">
           Welcome Back
         </h2>
+
+        {/* Regular Login Form */}
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-gray-700">Email</label>
@@ -102,20 +104,34 @@ const Login = () => {
             Login
           </button>
         </form>
+
+        {/* Divider for external logins */}
+        <div className="my-6 text-center">
+          <span className="text-gray-500">or</span>
+        </div>
+
+        {/* External Login Options */}
         <div className="mt-6 space-y-2">
-          {/* <GoogleLogin
+          <GoogleLogin
             onSuccess={handleGoogleSuccess}
             onError={handleGoogleFailure}
-          /> */}
+            className="w-full"
+            logo_alignment="center"
+          />
           <FacebookLogin
             appId={process.env.REACT_APP_FACEBOOK_APP_ID}
             autoLoad={false}
             fields="name,email"
             callback={handleFacebookSuccess}
-            textButton="Login with Facebook"
-            cssClass="bg-blue-600 text-white p-2 w-full rounded-lg shadow hover:bg-blue-700 transition duration-150"
+            textButton={
+              <span className="flex items-center justify-center">
+                <FaFacebook className="mr-2" /> Sign in with Facebook
+              </span>
+            }
+            cssClass="bg-blue-600 text-white p-2 w-full rounded-lg shadow hover:bg-blue-700 transition duration-150 flex items-center justify-center"
           />
         </div>
+
         <div className="mt-6 text-center">
           <p className="text-gray-600">
             Don't have an account?{" "}

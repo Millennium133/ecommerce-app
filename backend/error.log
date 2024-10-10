@@ -8,3 +8,10 @@
 {"level":"error","message":"Error processing checkout: Order validation failed: paymentMethod: Path `paymentMethod` is required."}
 {"level":"error","message":"Log in Failed via invalid password"}
 {"level":"error","message":"User already exists: aong1244@gmail.com"}
+{"level":"error","message":"Error logging in the Google: Cannot access 'token' before initialization"}
+{"level":"error","message":"Error logging in the Google: Request failed with status code 400"}
+{"level":"error","message":"Error logging in the Google: Request failed with status code 400"}
+{"level":"error","message":"Error logging in the Google: googleResponse is not defined"}
+{"level":"error","message":"Error logging in the Google: googleResponse is not defined"}
+{"level":"error","message":"Error logging in the Google: Request failed with status code 400"}
+{"level":"error","message":"Error logging in the Google: Request failed with status code 400"}
