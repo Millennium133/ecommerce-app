@@ -70,7 +70,6 @@ router.put("/:id", protect, roleCheck("admin"), async (req, res) => {
             message: notificationMessage,
           });
           await newNotification.save();
-          console.log(1);
           // Send real-time notification
           sendNotification({
             userId: wishlistItem.userId,

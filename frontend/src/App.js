@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ProductList from "./pages/ProductList";
 import ProductDetail from "./pages/ProductDetail";
@@ -13,8 +13,20 @@ import OrderHistory from "./pages/OrderHistory";
 import EditProduct from "./pages/EditProduct";
 import Wishlist from "./pages/Wishlist";
 import Profile from "./pages/Profile";
+import { initSocket } from "./services/socket"; // Import the socket service
+import LoadingSpinner from "./components/LoadingSpinner";
 
 function App() {
+  const [isSocketReady, setIsSocketReady] = useState(false);
+
+  useEffect(() => {
+    initSocket(process.env.REACT_APP_API_URL); // Replace with your server URL
+    setIsSocketReady(true); // Mark the socket as initialized
+  }, []);
+  if (!isSocketReady) {
+    // Optionally render a loading state until socket is ready
+    return <LoadingSpinner />;
+  }
   return (
     <Router>
       <Routes>

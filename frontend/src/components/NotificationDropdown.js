@@ -1,9 +1,7 @@
 import { FaBell } from "react-icons/fa";
 import { useEffect } from "react"; // Import useEffect for real-time notification handling
 import axiosInstance from "../services/axiosConfig";
-import io from "socket.io-client";
-
-const socket = io("http://localhost:3001"); // Adjust the server URL as needed
+import { getSocket } from "../services/socket"; // Import the socket service
 
 const NotificationDropdown = ({
   notifications,
@@ -15,13 +13,15 @@ const NotificationDropdown = ({
 
   // Real-time notifications with Socket.IO
   useEffect(() => {
+    const socket = getSocket();
     // Listen for real-time notifications from the server
+
     socket.on("notification", (notification) => {
-      console.log(`Notification: ${JSON.stringify(notification)}`);
+      // console.log(`Notification: ${JSON.stringify(notification)}`);
 
       // Update notifications in the state with the new notification
       setNotifications((prev) => {
-        console.log(`prev: ${JSON.stringify(prev)}`);
+        // console.log(`prev: ${JSON.stringify(prev)}`);
         const notificationIndex = prev.findIndex(
           (n) =>
             n._id === notification._id && n.message === notification.message
