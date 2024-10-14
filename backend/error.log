@@ -31,3 +31,4 @@
 {"level":"error","message":"Error during login: Illegal arguments: string, undefined"}
 {"level":"error","message":"Log in Failed via invalid password"}
 {"level":"error","message":"Error marking notification as seen: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Notification\""}
+{"level":"error","message":"Error logging in the Facebook: Request failed with status code 400"}
