@@ -57,16 +57,25 @@ const NotificationDropdown = ({
   };
 
   const markAll = async (notifications) => {
-    // Use a map to create an array of promises
-    const markPromises = notifications.map((notification) =>
-      markAsSeen(notification._id)
+    // Optimistically update the state first
+    setNotifications(
+      notifications.map((n) => ({
+        ...n,
+        seen: true,
+      }))
     );
 
     try {
+      // Use a map to create an array of promises for marking notifications as seen in the backend
+      const markPromises = notifications.map((notification) =>
+        axiosInstance.put(`/api/notifications/mark-seen/${notification._id}`)
+      );
+
       // Await all promises to resolve
       await Promise.all(markPromises);
     } catch (error) {
       console.error("Error marking notifications as seen:", error);
+      // Optional: handle reverting the state if any API call fails
     }
   };
 
@@ -104,8 +113,11 @@ const NotificationDropdown = ({
             <p className="text-gray-500">No notifications</p>
           ) : (
             <div>
-              <button onClick={() => markAll(notifications)} className="mb-2">
-                mark all
+              <button
+                onClick={() => markAll(notifications)}
+                className="mb-2 px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded transition duration-200 ease-in-out"
+              >
+                Mark All
               </button>
               <ul>
                 {notifications.map((notification) => (

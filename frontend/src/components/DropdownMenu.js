@@ -5,11 +5,16 @@ import { TbJewishStarFilled } from "react-icons/tb";
 import { MdDashboard } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
 
-const DropdownMenu = ({ isOpen, onLogout }) => {
+const DropdownMenu = ({ isOpen, onLogout, menuRef }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute right-5 mt-2 w-48 bg-white shadow-lg rounded-lg p-4 z-20">
+    <div
+      ref={menuRef}
+      className="absolute mt-2 w-48 bg-white shadow-lg rounded-lg p-4 z-20"
+      style={{ top: "100%", left: 0 }} // Ensure it positions below and to the left of the trigger
+    >
+      {" "}
       <ul className="space-y-4">
         <li>
           <Link

@@ -22,7 +22,7 @@ const Login = () => {
       localStorage.setItem("role", response.data.role);
       navigate("/");
     } catch (error) {
-      setError(`Login failed. Please try again. ${error}`);
+      setError(`Login failed. Please try again.`);
     }
   };
 

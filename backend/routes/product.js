@@ -54,10 +54,8 @@ router.put("/:id", protect, roleCheck("admin"), async (req, res) => {
 
     if (price < oldPrice) {
       const wishlists = await Wishlist.find({ productId: product._id });
-      console.log(wishlists);
       wishlists.forEach(async (wishlistItem) => {
         const notificationMessage = `The price of "${product.title}" has dropped to ${price} Coins.`;
-
         // Check if a similar notification already exists
         const existingNotification = await Notification.findOne({
           userId: wishlistItem.userId,

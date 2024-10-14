@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import axiosInstance from "../services/axiosConfig";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorPage from "../components/ErrorPage";
+import { LazyLoadImage } from "react-lazy-load-image-component"; // Lazy load package
+import "react-lazy-load-image-component/src/effects/blur.css";
 import { FaStar } from "react-icons/fa"; // Import star icon
 
 const ProductList = () => {
@@ -11,6 +13,10 @@ const ProductList = () => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 20; // Number of products per page
 
   useEffect(() => {
     // Fetch products from the backend API
@@ -54,13 +60,24 @@ const ProductList = () => {
     return aInWishlist === bInWishlist ? 0 : aInWishlist ? -1 : 1;
   });
 
+  // Calculate the displayed products based on current page
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = sortedProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
+  // Calculate total pages
+  const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
+
   return (
     <div>
       <Header />
       <main className="container mx-auto p-4">
         <h2 className="text-3xl font-bold mb-6 text-secondary">Products</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {sortedProducts.map((product) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {currentProducts.map((product) => (
             <div
               key={product._id}
               className="bg-white p-6 shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300"
@@ -68,10 +85,11 @@ const ProductList = () => {
               <div className="relative">
                 {" "}
                 {/* Make this container relative */}
-                <img
+                <LazyLoadImage
                   src={product.imageUrl}
                   alt={product.title}
                   className="w-full h-64 object-cover rounded-lg mb-4"
+                  effect="blur"
                 />
                 <FaStar
                   className={`absolute top-2 right-2 cursor-pointer text-2xl ${
@@ -97,6 +115,28 @@ const ProductList = () => {
               </Link>
             </div>
           ))}
+        </div>
+        {/* Pagination Controls */}
+        <div className="flex justify-between items-center mt-6">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="p-2 bg-blue-500 text-white rounded disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="p-2 bg-blue-500 text-white rounded disabled:opacity-50"
+          >
+            Next
+          </button>
         </div>
       </main>
     </div>

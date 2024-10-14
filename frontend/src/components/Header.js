@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../services/axiosConfig";
 import { FaCoins, FaBars } from "react-icons/fa";
@@ -11,6 +11,8 @@ const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+  const menuRef = useRef(null); // Create a ref for the dropdown menu
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,15 +60,22 @@ const Header = () => {
           />
 
           {/* Hamburger menu icon */}
-          <FaBars
-            className="text-2xl cursor-pointer text-primary"
-            onClick={() => setMenuOpen(!menuOpen)}
-          />
+          <div className="relative">
+            {" "}
+            {/* Make this div relative for proper dropdown positioning */}
+            <FaBars
+              className="text-2xl cursor-pointer text-primary"
+              onClick={() => setMenuOpen(!menuOpen)}
+            />
+            {/* Dropdown menu for navigation */}
+            <DropdownMenu
+              isOpen={menuOpen}
+              onLogout={handleLogout}
+              menuRef={menuRef}
+            />
+          </div>
         </div>
       </div>
-
-      {/* Dropdown menu for navigation */}
-      <DropdownMenu isOpen={menuOpen} onLogout={handleLogout} />
     </header>
   );
 };
