@@ -6,6 +6,10 @@ sudo apt install -y nginx
 
 # Create Nginx load balancer config file
 sudo bash -c 'cat > /etc/nginx/sites-available/load_balancer.conf <<EOF
+upstream backend {
+    server localhost:3001;  # PM2 instance
+    # You can add more servers here if you scale horizontally
+}
 server {
     listen 80;  # Port 80 for HTTP traffic
 
@@ -16,7 +20,7 @@ server {
     }
 
     location /api {
-        proxy_pass http://localhost:3001;  # Forward traffic to PM2 cluster on port 3001
+        proxy_pass http://backend;  # Forward traffic to PM2 cluster on port 3001
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
