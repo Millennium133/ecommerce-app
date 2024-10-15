@@ -44,7 +44,14 @@ After both server have been started: `ngrok http ${your own ip address}:${fronte
 2. First, go to your project.
 3. Second, choose the option "APIS and services" and click "CREDENTIALS".
 4. Third, find your project in "OAuth 2.0 Client IDs" section" and click it.
-5. Fourth, add the URI that is got from ngrok in both "Authorised JavaScript origins" and "Authorised redirect URIs"
+5. Fourth, add the URI that is got from ngrok in both "Authorised JavaScript origins" and "Authorised
+   redirect URIs"
+
+### Nginx Setup
+
+1. sudo systemctl start nginx
+2. pm2 start server.js -i max --name express-app
+3. Whenever the file is changed, run sudo systemctl reload nginx
 
 ## Contributing
 

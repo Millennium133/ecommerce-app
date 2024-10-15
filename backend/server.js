@@ -45,7 +45,7 @@ const PORT = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV !== "test") {
   mongoose
-    .connect(process.env.MONGO_URI)
+    .connect(process.env.MONGO_URI, { maxPoolSize: 10 })
     .then(() => {
       server.listen(PORT, "localhost", () => {
         console.log(`Server running on port ${PORT}`);
