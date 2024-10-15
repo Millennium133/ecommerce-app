@@ -32,3 +32,14 @@
 {"level":"error","message":"Log in Failed via invalid password"}
 {"level":"error","message":"Error marking notification as seen: Cast to ObjectId failed for value \"undefined\" (type string) at path \"_id\" for model \"Notification\""}
 {"level":"error","message":"Error logging in the Facebook: Request failed with status code 400"}
+{"level":"error","message":"Error updating the profile: DOMPurify.sanitize is not a function"}
+{"level":"error","message":"Error updating the profile: DOMPurify.sanitize is not a function"}
+{"level":"error","message":"Error updating the profile: DOMPurify.sanitize is not a function"}
+{"level":"error","message":"Error updating the profile: User validation failed: name: Path `name` is required., email: Path `email` is required."}
+{"level":"error","message":"Error updating the profile: User validation failed: name: Path `name` is required., email: Path `email` is required."}
+{"level":"error","message":"Error updating the profile: User validation failed: name: Path `name` is required., email: Path `email` is required."}
+{"level":"error","message":"Error updating the profile: User validation failed: name: Path `name` is required."}
+{"level":"error","message":"Error updating the profile: validator is not defined"}
+{"level":"error","message":"Error updating the profile: validator is not defined"}
+{"level":"error","message":"Error updating the profile: Assignment to constant variable."}
+{"level":"error","message":"Error updating the profile: Assignment to constant variable."}

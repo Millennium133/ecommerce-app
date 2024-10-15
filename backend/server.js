@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const http = require("http"); // Needed for Socket.IO integration
 const cors = require("cors");
+const helmet = require("helmet");
+
 const app = express();
 
 const authRoutes = require("./routes/auth");
@@ -21,6 +23,7 @@ if (process.env.NODE_ENV !== "test") {
   dotenv.config();
 }
 // Middleware
+app.use(helmet()); // Add helmet middleware for security
 app.use(express.json());
 app.use(cors());
 app.use("/api/", apiLimiter);

@@ -36,8 +36,6 @@ const Checkout = () => {
 
   const handleCheckout = async () => {
     try {
-      console.log(shippingAddress);
-      console.log(paymentMethod);
       await axiosInstance.post("/api/cart/checkout", {
         shippingAddress,
         paymentMethod,

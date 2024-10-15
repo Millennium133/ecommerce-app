@@ -1,5 +1,7 @@
 // product.js (backend route)
 const express = require("express");
+const validator = require("validator");
+
 const router = express.Router();
 const Product = require("../models/Product");
 const User = require("../models/User");
@@ -9,6 +11,7 @@ const logger = require("../utils/logger");
 const Wishlist = require("../models/Wishlist");
 const Notification = require("../models/Notification");
 const { sendNotification } = require("../utils/socket");
+
 // Get all products
 router.get("/", async (req, res) => {
   try {
@@ -45,11 +48,47 @@ router.put("/:id", protect, roleCheck("admin"), async (req, res) => {
     }
     const oldPrice = product.price;
 
-    product.title = title;
-    product.description = description;
-    product.price = price;
-    product.category = category;
-    product.imageUrl = imageUrl;
+    // Validate and sanitize the title
+    if (validator.isEmpty(title)) {
+      return res.status(400).json({ message: "Title cannot be empty" });
+    }
+    const validatedTitle = validator.escape(title); // Escape any HTML characters
+
+    // Validate and sanitize the description
+    if (validator.isEmpty(description)) {
+      return res.status(400).json({ message: "Description cannot be empty" });
+    }
+    const validatedDescription = validator.escape(description); // Escape any HTML characters
+
+    // Validate and sanitize the price
+    if (validator.isEmpty(price)) {
+      return res.status(400).json({ message: "Price cannot be empty" });
+    }
+    if (validator.isInt(price)) {
+      return res.status(400).json({ message: "Price need to be Integer" });
+    }
+    const validatedPrice = validator.parseInt(price); // Escape any HTML characters
+
+    // Validate and sanitize the category
+    if (validator.isEmpty(category)) {
+      return res.status(400).json({ message: "Category cannot be empty" });
+    }
+    const validatedCategory = validator.escape(category); // Escape any HTML characters
+
+    // Validate and sanitize the ImageUrl
+    if (validator.isEmpty(imageUrl)) {
+      return res.status(400).json({ message: "ImageUrl cannot be empty" });
+    }
+    if (!validator.isURL(imageUrl)) {
+      return res.status(400).json({ message: "Invalid Image URL" });
+    }
+    const validatedImageUrl = validator.escape(imageUrl); // Escape any HTML characters
+
+    product.title = validatedTitle;
+    product.description = validatedDescription;
+    product.price = validatedPrice;
+    product.category = validatedCategory;
+    product.imageUrl = validatedImageUrl;
     await product.save();
 
     if (price < oldPrice) {

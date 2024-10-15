@@ -4,6 +4,7 @@ import ErrorPage from "../components/ErrorPage";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Header from "../components/Header";
 import { FaCoins, FaEnvelope, FaUser, FaUserEdit } from "react-icons/fa";
+import DOMPurify from "dompurify";
 
 const Profile = () => {
   const [email, setEmail] = useState("");
@@ -36,9 +37,11 @@ const Profile = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
+      const sanitizedName = DOMPurify.sanitize(name);
+      const sanitizedEmail = DOMPurify.sanitize(email);
       await axiosInstance.put(`/api/user/profile`, {
-        name,
-        email,
+        name: sanitizedName,
+        email: sanitizedEmail,
       });
       setIsFailed(false);
       setMessage("Profile updated successfully");
@@ -69,7 +72,6 @@ const Profile = () => {
               {message}
             </p>
           )}
-
           <form onSubmit={handleUpdate} className="space-y-6">
             <div className="mb-3">
               <label className="block text-lg font-semibold mb-2">

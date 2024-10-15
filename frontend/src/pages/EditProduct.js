@@ -3,9 +3,10 @@ import Header from "../components/Header";
 import axiosInstance from "../services/axiosConfig";
 import { useParams, useNavigate } from "react-router-dom";
 import ErrorPage from "../components/ErrorPage";
+import DOMPurify from "dompurify";
 
 const EditProduct = () => {
-  const { id } = useParams(); // Get the product ID from the URL
+  const { id } = useParams();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -27,7 +28,7 @@ const EditProduct = () => {
         setCategory(product.category);
         setImageUrl(product.imageUrl);
       } catch (error) {
-        setError("Error fetching product:", error);
+        setError("Error fetching product: " + error.message);
       }
     };
     fetchProduct();
@@ -36,89 +37,107 @@ const EditProduct = () => {
   const handleEditProduct = async (e) => {
     e.preventDefault();
     try {
+      const sanitizedTitle = DOMPurify.sanitize(title);
+      const sanitizedDescription = DOMPurify.sanitize(description);
+      const sanitizedPrice = DOMPurify.sanitize(price);
+      const sanitizedCategory = DOMPurify.sanitize(category);
+      const sanitizedImageUrl = DOMPurify.sanitize(imageUrl);
+
       await axiosInstance.put(`/api/products/${id}`, {
-        title,
-        description,
-        price,
-        category,
-        imageUrl,
+        title: sanitizedTitle,
+        description: sanitizedDescription,
+        price: sanitizedPrice,
+        category: sanitizedCategory,
+        imageUrl: sanitizedImageUrl,
       });
       setIsFailed(false);
       setMessage("Product updated successfully");
-      setTimeout(() => navigate("/admin"), 2000); // Redirect to Admin Dashboard after 2 seconds
+      setTimeout(() => navigate("/admin"), 2000);
     } catch (error) {
       setIsFailed(true);
-      setMessage("Error updating product");
+      setMessage("Error updating product: " + error.message);
     }
   };
 
   if (error) return <ErrorPage message={error} />;
 
   return (
-    <div>
+    <div className="bg-gray-100 min-h-screen">
       <Header />
       <main className="container mx-auto p-6">
-        <h2 className="text-3xl font-bold mb-6">Edit Product</h2>
+        <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">
+          Edit Product
+        </h2>
         {message && (
           <p
-            className={`text-xl ${
-              isFailed ? "text-red-500" : "text-green-500"
+            className={`text-xl text-center ${
+              isFailed ? "text-red-600" : "text-green-600"
             }`}
           >
             {message}
           </p>
         )}
-        <form onSubmit={handleEditProduct}>
+        <form
+          onSubmit={handleEditProduct}
+          className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg"
+        >
           <div className="mb-4">
-            <label className="block">Title</label>
+            <label className="block text-gray-600">Title</label>
             <input
+              type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="border p-2 w-full"
+              className="border border-gray-300 p-2 w-full rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-400"
               required
+              aria-label="Product Title"
             />
           </div>
           <div className="mb-4">
-            <label className="block">Description</label>
+            <label className="block text-gray-600">Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="border p-2 w-full"
+              className="border border-gray-300 p-2 w-full rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-400"
               required
+              aria-label="Product Description"
             />
           </div>
           <div className="mb-4">
-            <label className="block">Category</label>
+            <label className="block text-gray-600">Category</label>
             <input
+              type="text"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="border p-2 w-full"
+              className="border border-gray-300 p-2 w-full rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-400"
               required
+              aria-label="Product Category"
             />
           </div>
           <div className="mb-4">
-            <label className="block">Price (in Coins)</label>
+            <label className="block text-gray-600">Price (in Coins)</label>
             <input
               type="number"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="border p-2 w-full"
+              className="border border-gray-300 p-2 w-full rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-400"
               required
+              aria-label="Product Price"
             />
           </div>
           <div className="mb-4">
-            <label className="block">Image URL</label>
+            <label className="block text-gray-600">Image URL</label>
             <input
+              type="text"
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
-              className="border p-2 w-full"
+              className="border border-gray-300 p-2 w-full rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-400"
               required
+              aria-label="Product Image URL"
             />
           </div>
-
           <button
             type="submit"
-            className="bg-primary text-white p-3 rounded-lg"
+            className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg w-full transition duration-200"
           >
             Save Changes
           </button>
