@@ -7,4 +7,4 @@ git add .
 git commit -m "Change repository from master to main on github workflow"  # You can parameterize this if you want to pass a message as an argument.
 
 # Push to the remote repository
-git push -u origin master  # Change "master" to your current branch if needed
+git push -u origin main  # Change "master" to your current branch if needed
